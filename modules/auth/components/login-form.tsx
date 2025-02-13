@@ -46,7 +46,7 @@ export function LoginForm({
   });
 
   const handleSubmit = async (values: z.infer<typeof schema>) => {
-    const { data, error } = await authClient.signIn.email(
+    const { error } = await authClient.signIn.email(
       {
         email: values.email,
         password: values.password,
@@ -77,6 +77,10 @@ export function LoginForm({
     router.push(
       session.data?.user.isOnBoarded ? "/admin/dashboard" : "/onboarding",
     );
+    toast({
+      title: "เข้าสู่ระบบสำเร็จ",
+      description: "ยินดีต้อนรับกลับมา",
+    });
   };
 
   return (
