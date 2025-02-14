@@ -4,16 +4,10 @@ import { MongoClient } from "mongodb";
 import { env } from "./env";
 
 const client = new MongoClient(env.MONGO_URI);
+
 export const auth = betterAuth({
   database: mongodbAdapter(client.db()),
   emailAndPassword: {
     enabled: true,
-  },
-  user: {
-    additionalFields: {
-      isOnBoarded: {
-        type: "boolean",
-      },
-    },
   },
 });

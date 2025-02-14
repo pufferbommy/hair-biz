@@ -1,5 +1,7 @@
 import { Toaster } from "@/components/ui/toaster";
 import "./globals.css";
+import { ThemeProvider } from "@/components/theme-provider";
+import { TooltipProvider } from "@/components/ui/tooltip";
 import type { Metadata } from "next";
 import { Anuphan } from "next/font/google";
 import type React from "react";
@@ -38,9 +40,18 @@ export default function RootLayout(props: RootLayoutProps) {
   const { children } = props;
 
   return (
-    <html lang="en" className="scroll-smooth">
+    <html lang="th" className="scroll-smooth" suppressHydrationWarning>
       <body className={`${anuphan.className} antialiased`}>
-        {children}
+        <TooltipProvider delayDuration={0}>
+          <ThemeProvider
+            attribute="class"
+            disableTransitionOnChange
+            enableSystem={false}
+            defaultTheme="dark"
+          >
+            {children}
+          </ThemeProvider>
+        </TooltipProvider>
         <Toaster />
       </body>
     </html>

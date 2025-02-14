@@ -15,7 +15,8 @@ import {
   SidebarProvider,
   SidebarTrigger,
 } from "@/components/ui/sidebar";
-import { usePathname } from "next/navigation";
+import { useSession } from "@/lib/auth-client";
+import { usePathname, useRouter } from "next/navigation";
 
 interface AdminLayoutProps {
   children: React.ReactNode;
@@ -24,6 +25,13 @@ interface AdminLayoutProps {
 export default function AdminLayout(props: AdminLayoutProps) {
   const { children } = props;
 
+  const session = useSession();
+  const router = useRouter();
+
+  if (!session.data) {
+    return router.push("/auth/login");
+  }
+
   const pathname = usePathname();
 
   const nameMap = {
@@ -31,7 +39,7 @@ export default function AdminLayout(props: AdminLayoutProps) {
     "/admin/appointments": "การนัดหมาย",
     "/admin/services": "บริการ",
     "/admin/barbers": "ช่างตัดผม",
-  };
+  } as const;
 
   return (
     <SidebarProvider>
@@ -50,7 +58,9 @@ export default function AdminLayout(props: AdminLayoutProps) {
                   <>
                     <BreadcrumbSeparator className="hidden md:block" />
                     <BreadcrumbItem>
-                      <BreadcrumbPage>{nameMap[pathname]}</BreadcrumbPage>
+                      <BreadcrumbPage>
+                        {nameMap[pathname as keyof typeof nameMap]}
+                      </BreadcrumbPage>
                     </BreadcrumbItem>
                   </>
                 )}

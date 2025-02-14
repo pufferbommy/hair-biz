@@ -3,9 +3,9 @@ import type { Config } from "tailwindcss";
 export default {
   darkMode: ["class"],
   content: [
-    "./pages/**/*.{js,ts,jsx,tsx,mdx}",
     "./components/**/*.{js,ts,jsx,tsx,mdx}",
     "./app/**/*.{js,ts,jsx,tsx,mdx}",
+    "./modules/**/*.{js,ts,jsx,tsx,mdx}",
   ],
   theme: {
     extend: {
@@ -14,7 +14,7 @@ export default {
         padding: "1rem",
         screens: {
           DEFAULT: "100%",
-          sm: "1240px",
+          sm: "1000px",
         },
       },
       colors: {
@@ -31,12 +31,10 @@ export default {
         primary: {
           DEFAULT: "hsl(var(--primary))",
           foreground: "hsl(var(--primary-foreground))",
-          dark: "hsl(var(--primary-dark))",
         },
         secondary: {
           DEFAULT: "hsl(var(--secondary))",
           foreground: "hsl(var(--secondary-foreground))",
-          dark: "hsl(var(--secondary-dark))",
         },
         muted: {
           DEFAULT: "hsl(var(--muted))",
@@ -49,7 +47,6 @@ export default {
         destructive: {
           DEFAULT: "hsl(var(--destructive))",
           foreground: "hsl(var(--destructive-foreground))",
-          dark: "hsl(var(--destructive-dark))",
         },
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",

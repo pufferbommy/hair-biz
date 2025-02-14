@@ -17,13 +17,14 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { toast } from "@/hooks/use-toast";
-import { authClient } from "@/lib/auth-client";
+import { type $ERROR_CODES, signIn, useSession } from "@/lib/auth-client";
+
 import { cn } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
@@ -32,11 +33,17 @@ const schema = z.object({
   password: z.string().min(1, "กรุณากรอกรหัสผ่าน"),
 });
 
-export function LoginForm({
-  className,
-  ...props
-}: React.ComponentPropsWithoutRef<"div">) {
+export function LoginForm() {
   const router = useRouter();
+
+  const { data } = useSession();
+
+  if (data) {
+    router.push("/admin/dashboard");
+  }
+
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
   const form = useForm<z.infer<typeof schema>>({
     resolver: zodResolver(schema),
     defaultValues: {
@@ -46,7 +53,9 @@ export function LoginForm({
   });
 
   const handleSubmit = async (values: z.infer<typeof schema>) => {
-    const { error } = await authClient.signIn.email(
+    setIsSubmitting(true);
+
+    const { error } = await signIn.email(
       {
         email: values.email,
         password: values.password,
@@ -59,9 +68,7 @@ export function LoginForm({
     );
 
     if (error?.code) {
-      type ErrorTypes = Partial<
-        Record<keyof typeof authClient.$ERROR_CODES, string>
-      >;
+      type ErrorTypes = Partial<Record<keyof typeof $ERROR_CODES, string>>;
       const errorCodes = {
         INVALID_EMAIL_OR_PASSWORD: "อีเมลหรือรหัสผ่านไม่ถูกต้อง",
       } satisfies ErrorTypes;
@@ -70,88 +77,76 @@ export function LoginForm({
         description: errorCodes[error.code as keyof typeof errorCodes],
         variant: "destructive",
       });
+      setIsSubmitting(false);
       return;
     }
 
-    const session = await authClient.getSession();
-    router.push(
-      session.data?.user.isOnBoarded ? "/admin/dashboard" : "/onboarding",
-    );
+    router.push("/admin/dashboard");
     toast({
       title: "เข้าสู่ระบบสำเร็จ",
       description: "ยินดีต้อนรับกลับมา",
     });
+    setIsSubmitting(false);
   };
 
   return (
-    <div className={cn("flex flex-col gap-6", className)} {...props}>
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-2xl">เข้าสู่ระบบ</CardTitle>
-          <CardDescription>กรอกข้อมูลของคุณเพื่อเข้าสู่ระบบ</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <Form {...form}>
-            <form onSubmit={form.handleSubmit(handleSubmit)}>
-              <div className="flex flex-col gap-6">
-                <FormField
-                  control={form.control}
-                  name="email"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>อีเมล</FormLabel>
-                      <FormControl>
-                        <Input {...field} placeholder="m@example.com" />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="password"
-                  render={({ field }) => (
-                    <FormItem>
-                      <div className="flex items-center justify-between">
-                        <FormLabel>รหัสผ่าน</FormLabel>
-                        <a
-                          href="forgot-password"
-                          className="text-sm underline-offset-4 hover:underline"
-                        >
-                          ลืมรหัสผ่าน?
-                        </a>
-                      </div>
-                      <FormControl>
-                        <Input
-                          {...field}
-                          type="password"
-                          placeholder="********"
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <Button type="submit" className="w-full">
-                  เข้าสู่ระบบ
-                </Button>
-                <Button variant="outline" className="w-full">
-                  เข้าสู่ระบบด้วย Google
-                </Button>
-              </div>
-              <div className="mt-4 text-center text-sm">
-                ไม่มีบัญชี?{" "}
-                <Link
-                  href="/auth/register"
-                  className="underline underline-offset-4"
-                >
-                  สมัครสมาชิก
-                </Link>
-              </div>
-            </form>
-          </Form>
-        </CardContent>
-      </Card>
-    </div>
+    <>
+      <h1 className="text-2xl font-bold text-center">เข้าสู่ระบบ</h1>
+      <Form {...form}>
+        <form className="space-y-4" onSubmit={form.handleSubmit(handleSubmit)}>
+          <FormField
+            control={form.control}
+            name="email"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>อีเมล</FormLabel>
+                <FormControl>
+                  <Input {...field} placeholder="johndoe@gmail.com" />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="password"
+            render={({ field }) => (
+              <FormItem>
+                <div className="flex items-center justify-between">
+                  <FormLabel>รหัสผ่าน</FormLabel>
+                  <a
+                    href="forgot-password"
+                    className="text-sm underline-offset-4 hover:underline"
+                  >
+                    ลืมรหัสผ่าน?
+                  </a>
+                </div>
+                <FormControl>
+                  <Input {...field} type="password" placeholder="********" />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <Button
+            type="submit"
+            size="lg"
+            className="w-full"
+            disabled={isSubmitting}
+          >
+            เข้าสู่ระบบ
+          </Button>
+        </form>
+      </Form>
+      <Button disabled variant="outline" size="lg" className="w-full">
+        เข้าสู่ระบบด้วย Google
+      </Button>
+      <div className="text-center text-sm">
+        ไม่มีบัญชี?{" "}
+        <Link href="/auth/sign-up" className="underline underline-offset-4">
+          สมัครสมาชิก
+        </Link>
+      </div>
+    </>
   );
 }

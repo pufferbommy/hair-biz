@@ -19,17 +19,16 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar";
 
-export function TeamSwitcher({
-  teams,
+export function ShopSwitcher({
+  shops,
 }: {
-  teams: {
+  shops: {
     name: string;
     logo: React.ElementType;
-    plan: string;
   }[];
 }) {
   const { isMobile } = useSidebar();
-  const [activeTeam, setActiveTeam] = React.useState(teams[0]);
+  const [activeShop, setActiveShop] = React.useState(shops[0] || null); // Set activeShop to null if no shops
 
   return (
     <SidebarMenu>
@@ -41,13 +40,16 @@ export function TeamSwitcher({
               className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
             >
               <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
-                <activeTeam.logo className="size-4" />
+                {activeShop ? (
+                  <activeShop.logo className="size-4" />
+                ) : (
+                  <div className="size-4 bg-gray-200 rounded-full" /> // Placeholder for no shop
+                )}
               </div>
               <div className="grid flex-1 text-left text-sm leading-tight">
                 <span className="truncate font-semibold">
-                  {activeTeam.name}
+                  {activeShop ? activeShop.name : "ไม่มีร้าน"}
                 </span>
-                <span className="truncate text-xs">{activeTeam.plan}</span>
               </div>
               <ChevronsUpDown className="ml-auto" />
             </SidebarMenuButton>
@@ -59,27 +61,33 @@ export function TeamSwitcher({
             sideOffset={4}
           >
             <DropdownMenuLabel className="text-xs text-muted-foreground">
-              Teams
+              ร้าน
             </DropdownMenuLabel>
-            {teams.map((team, index) => (
-              <DropdownMenuItem
-                key={team.name}
-                onClick={() => setActiveTeam(team)}
-                className="gap-2 p-2"
-              >
-                <div className="flex size-6 items-center justify-center rounded-sm border">
-                  <team.logo className="size-4 shrink-0" />
-                </div>
-                {team.name}
-                <DropdownMenuShortcut>⌘{index + 1}</DropdownMenuShortcut>
+            {shops.length > 0 ? (
+              shops.map((shop, index) => (
+                <DropdownMenuItem
+                  key={shop.name}
+                  onClick={() => setActiveShop(shop)}
+                  className="gap-2 p-2"
+                >
+                  <div className="flex size-6 items-center justify-center rounded-sm border">
+                    <shop.logo className="size-4 shrink-0" />
+                  </div>
+                  {shop.name}
+                  <DropdownMenuShortcut>⌘{index + 1}</DropdownMenuShortcut>
+                </DropdownMenuItem>
+              ))
+            ) : (
+              <DropdownMenuItem className="p-2 text-muted-foreground">
+                ไม่มีร้าน
               </DropdownMenuItem>
-            ))}
+            )}
             <DropdownMenuSeparator />
             <DropdownMenuItem className="gap-2 p-2">
               <div className="flex size-6 items-center justify-center rounded-md border bg-background">
                 <Plus className="size-4" />
               </div>
-              <div className="font-medium text-muted-foreground">Add team</div>
+              <div className="font-medium text-muted-foreground">เพิ่มร้านใหม่</div>
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

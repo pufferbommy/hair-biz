@@ -1,10 +1,10 @@
 "use client";
 
-import { Calendar, Scissors, Settings, User } from "lucide-react";
+import { Calendar, Scissors, Settings, Store, User } from "lucide-react";
 import type * as React from "react";
 
 import { NavUser } from "@/components/nav-user";
-import { TeamSwitcher } from "@/components/team-switcher";
+import { ShopSwitcher } from "@/components/shop-switcher";
 import {
   Sidebar,
   SidebarContent,
@@ -16,22 +16,12 @@ import {
   SidebarMenuItem,
   SidebarRail,
 } from "@/components/ui/sidebar";
+import { useSession } from "@/lib/auth-client";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 const data = {
-  user: {
-    name: "Barber Shop Owner",
-    email: "owner@barbershop.com",
-    avatar: "/avatars/barber.jpg",
-  },
-  teams: [
-    {
-      name: "Barber Team",
-      logo: User,
-      plan: "Professional",
-    },
-  ],
+  shops: [],
   navMain: [
     {
       title: "แดชบอร์ด",
@@ -59,11 +49,12 @@ const data = {
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const pathname = usePathname();
+  const session = useSession();
 
   return (
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
-        <TeamSwitcher teams={data.teams} />
+        <ShopSwitcher shops={data.shops} />
       </SidebarHeader>
       <SidebarContent>
         <SidebarGroup>
@@ -86,7 +77,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         </SidebarGroup>
       </SidebarContent>
       <SidebarFooter>
-        <NavUser user={data.user} />
+        <NavUser user={session.data?.user} />
       </SidebarFooter>
       <SidebarRail />
     </Sidebar>
