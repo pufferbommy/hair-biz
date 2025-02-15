@@ -10,6 +10,8 @@ export const {
   signUp,
   signOut,
   getSession,
+  resetPassword,
+  forgetPassword,
 } = createAuthClient({
   baseURL: "http://localhost:3000",
   plugins: [inferAdditionalFields<typeof auth>()],
