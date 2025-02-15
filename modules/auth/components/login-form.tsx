@@ -2,13 +2,6 @@
 
 import { Button } from "@/components/ui/button";
 import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import {
   Form,
   FormControl,
   FormField,
@@ -19,8 +12,6 @@ import {
 import { Input } from "@/components/ui/input";
 import { toast } from "@/hooks/use-toast";
 import { type $ERROR_CODES, signIn, useSession } from "@/lib/auth-client";
-
-import { cn } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -129,10 +120,10 @@ export function LoginForm() {
             )}
           />
           <Button
+            loading={isSubmitting}
             type="submit"
             size="lg"
             className="w-full"
-            disabled={isSubmitting}
           >
             เข้าสู่ระบบ
           </Button>
