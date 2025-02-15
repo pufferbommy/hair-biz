@@ -1,6 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   Form,
   FormControl,
@@ -23,6 +24,7 @@ import { z } from "zod";
 const schema = z.object({
   email: z.string().min(1, "กรุณากรอกอีเมล").email("กรุณากรอกอีเมลที่ถูกต้อง"),
   password: z.string().min(1, "กรุณากรอกรหัสผ่าน"),
+  rememberMe: z.boolean(),
 });
 
 export function LoginForm() {
@@ -41,6 +43,7 @@ export function LoginForm() {
     defaultValues: {
       email: "",
       password: "",
+      rememberMe: false,
     },
   });
 
@@ -51,6 +54,7 @@ export function LoginForm() {
       {
         email: values.email,
         password: values.password,
+        rememberMe: values.rememberMe,
       },
       {
         onSuccess: (data) => {
@@ -82,63 +86,66 @@ export function LoginForm() {
   };
 
   return (
-    <>
-      <h1 className="text-2xl font-bold text-center">เข้าสู่ระบบ</h1>
-      <Form {...form}>
-        <form className="space-y-4" onSubmit={form.handleSubmit(handleSubmit)}>
+    <Form {...form}>
+      <form className="space-y-4" onSubmit={form.handleSubmit(handleSubmit)}>
+        <FormField
+          control={form.control}
+          name="email"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>อีเมล</FormLabel>
+              <FormControl>
+                <Input {...field} placeholder="johndoe@gmail.com" />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="password"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>รหัสผ่าน</FormLabel>
+              <FormControl>
+                <PasswordInput {...field} placeholder="********" />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <div className="flex justify-between items-center">
           <FormField
             control={form.control}
-            name="email"
+            name="rememberMe"
             render={({ field }) => (
-              <FormItem>
-                <FormLabel>อีเมล</FormLabel>
+              <FormItem className="flex items-center space-y-0 gap-2">
                 <FormControl>
-                  <Input {...field} placeholder="johndoe@gmail.com" />
+                  <Checkbox
+                    checked={field.value}
+                    onCheckedChange={field.onChange}
+                  />
                 </FormControl>
-                <FormMessage />
+                <FormLabel className="font-normal">จดจำฉันไว้ในระบบ</FormLabel>
               </FormItem>
             )}
           />
-          <FormField
-            control={form.control}
-            name="password"
-            render={({ field }) => (
-              <FormItem>
-                <div className="flex items-center justify-between">
-                  <FormLabel>รหัสผ่าน</FormLabel>
-                  <a
-                    href="forgot-password"
-                    className="text-sm underline-offset-4 hover:underline"
-                  >
-                    ลืมรหัสผ่าน?
-                  </a>
-                </div>
-                <FormControl>
-                  <PasswordInput {...field} placeholder="********" />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <Button
-            loading={isSubmitting}
-            type="submit"
-            size="lg"
-            className="w-full"
+          <Link
+            href="forgot-password"
+            className="underline-offset-4 text-sm hover:underline"
           >
-            เข้าสู่ระบบ
-          </Button>
-        </form>
-      </Form>
-      <Button disabled variant="outline" size="lg" className="w-full">
-        เข้าสู่ระบบด้วย Google
-      </Button>
-      <div className="text-center text-sm">
-        ไม่มีบัญชี?{" "}
-        <Link href="/auth/sign-up" className="underline underline-offset-4">
-          สมัครสมาชิก
-        </Link>
-      </div>
-    </>
+            ลืมรหัสผ่าน?
+          </Link>
+        </div>
+        <Button
+          loading={isSubmitting}
+          type="submit"
+          size="lg"
+          className="w-full"
+        >
+          เข้าสู่ระบบ
+        </Button>
+      </form>
+    </Form>
   );
 }

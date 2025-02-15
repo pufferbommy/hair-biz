@@ -22,14 +22,6 @@ export const metadata: Metadata = {
     "hair salon software",
     "barbershop business growth",
   ],
-  authors: [{ name: "Hair Biz Team" }],
-  creator: "Hair Biz",
-  publisher: "Hair Biz",
-  formatDetection: {
-    email: false,
-    address: false,
-    telephone: false,
-  },
 };
 
 interface RootLayoutProps {
