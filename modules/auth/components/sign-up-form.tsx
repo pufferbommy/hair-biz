@@ -20,7 +20,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
-const schema = z.object({
+const Register = z.object({
   email: z.string().min(1, "กรุณากรอกอีเมล").email("กรุณากรอกอีเมลที่ถูกต้อง"),
   password: z
     .string()
@@ -29,55 +29,22 @@ const schema = z.object({
     .regex(/\d/, "รหัสผ่านต้องมีตัวเลข (0-9) อย่างน้อย 1 ตัว"),
 });
 
-export function SignUpForm() {
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const router = useRouter();
+export type Register = z.infer<typeof Register>;
 
-  const { data } = useSession();
+interface SignUpFormProps {
+  onSubmit: (values: Register) => void;
+  isSubmitting: boolean;
+}
 
-  if (data) {
-    router.push("/admin/dashboard");
-  }
-
-  const form = useForm<z.infer<typeof schema>>({
-    resolver: zodResolver(schema),
+export function SignUpForm(props: SignUpFormProps) {
+  const form = useForm<Register>({
+    resolver: zodResolver(Register),
     defaultValues: { email: "", password: "" },
   });
 
-  const handleSubmit = async (values: z.infer<typeof schema>) => {
-    setIsSubmitting(true);
-
-    const { error } = await signUp.email({
-      name: "",
-      email: values.email,
-      password: values.password,
-      image: undefined,
-    });
-
-    if (error) {
-      const errorMessages: Record<string, string> = {
-        USER_ALREADY_EXISTS: "อีเมลนี้มีผู้ใช้งานแล้ว",
-      };
-      toast({
-        title: "เกิดข้อผิดพลาด",
-        description:
-          errorMessages[error.code as string] || "เกิดข้อผิดพลาดที่ไม่คาดคิด",
-        variant: "destructive",
-      });
-      setIsSubmitting(false);
-      return;
-    }
-
-    toast({
-      title: "สมัครสมาชิกสำเร็จ",
-    });
-    router.push("/admin/dashboard");
-    setIsSubmitting(false);
-  };
-
   return (
     <Form {...form}>
-      <form className="space-y-4" onSubmit={form.handleSubmit(handleSubmit)}>
+      <form className="space-y-4" onSubmit={form.handleSubmit(props.onSubmit)}>
         <FormField
           control={form.control}
           name="email"
@@ -135,7 +102,7 @@ export function SignUpForm() {
           type="submit"
           size="lg"
           className="w-full"
-          loading={isSubmitting}
+          loading={props.isSubmitting}
         >
           สมัครสมาชิก
         </Button>

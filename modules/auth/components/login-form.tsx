@@ -1,5 +1,3 @@
-"use client";
-
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
@@ -12,34 +10,29 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { PasswordInput } from "@/components/ui/password-input";
-import { toast } from "@/hooks/use-toast";
-import { type $ERROR_CODES, signIn, useSession } from "@/lib/auth-client";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
-const schema = z.object({
+const Login = z.object({
   email: z.string().min(1, "กรุณากรอกอีเมล").email("กรุณากรอกอีเมลที่ถูกต้อง"),
   password: z.string().min(1, "กรุณากรอกรหัสผ่าน"),
   rememberMe: z.boolean(),
 });
 
-export function LoginForm() {
-  const router = useRouter();
+export type Login = z.infer<typeof Login>;
 
-  const { data } = useSession();
+interface LoginFormProps {
+  onSubmit: (values: Login) => void;
+  isSubmitting: boolean;
+}
 
-  if (data) {
-    router.push("/admin/dashboard");
-  }
+export function LoginForm(props: LoginFormProps) {
+  const { onSubmit, isSubmitting } = props;
 
-  const [isSubmitting, setIsSubmitting] = useState(false);
-
-  const form = useForm<z.infer<typeof schema>>({
-    resolver: zodResolver(schema),
+  const form = useForm<Login>({
+    resolver: zodResolver(Login),
     defaultValues: {
       email: "",
       password: "",
@@ -47,47 +40,9 @@ export function LoginForm() {
     },
   });
 
-  const handleSubmit = async (values: z.infer<typeof schema>) => {
-    setIsSubmitting(true);
-
-    const { error } = await signIn.email(
-      {
-        email: values.email,
-        password: values.password,
-        rememberMe: values.rememberMe,
-      },
-      {
-        onSuccess: (data) => {
-          console.log("onSuccess", data);
-        },
-      },
-    );
-
-    if (error?.code) {
-      type ErrorTypes = Partial<Record<keyof typeof $ERROR_CODES, string>>;
-      const errorCodes = {
-        INVALID_EMAIL_OR_PASSWORD: "อีเมลหรือรหัสผ่านไม่ถูกต้อง",
-      } satisfies ErrorTypes;
-      toast({
-        title: "เกิดข้อผิดพลาด",
-        description: errorCodes[error.code as keyof typeof errorCodes],
-        variant: "destructive",
-      });
-      setIsSubmitting(false);
-      return;
-    }
-
-    router.push("/admin/dashboard");
-    toast({
-      title: "เข้าสู่ระบบสำเร็จ",
-      description: "ยินดีต้อนรับกลับมา",
-    });
-    setIsSubmitting(false);
-  };
-
   return (
     <Form {...form}>
-      <form className="space-y-4" onSubmit={form.handleSubmit(handleSubmit)}>
+      <form className="space-y-4" onSubmit={form.handleSubmit(onSubmit)}>
         <FormField
           control={form.control}
           name="email"
