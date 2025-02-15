@@ -19,15 +19,15 @@ export default function Header() {
         <nav>
           <ul className="flex gap-2">
             {isPending ? (
-              <Skeleton className="h-9 w-[105.17px] rounded-lg" />
+              <li>
+                <Skeleton className="h-9 w-[105.17px] rounded-lg" />
+              </li>
             ) : data ? (
-              <>
-                <li>
-                  <Button asChild>
-                    <Link href="/admin/dashboard">ไปยังแอป</Link>
-                  </Button>
-                </li>
-              </>
+              <li>
+                <Button asChild>
+                  <Link href="/admin/dashboard">ไปยังแอป</Link>
+                </Button>
+              </li>
             ) : (
               <>
                 <li>

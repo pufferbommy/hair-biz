@@ -138,7 +138,7 @@ export function SignUpForm() {
             type="submit"
             size="lg"
             className="w-full"
-            disabled={isSubmitting}
+            loading={isSubmitting}
           >
             สมัครสมาชิก
           </Button>

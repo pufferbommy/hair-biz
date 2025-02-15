@@ -37,8 +37,6 @@ interface RootLayoutProps {
 }
 
 export default function RootLayout(props: RootLayoutProps) {
-  const { children } = props;
-
   return (
     <html lang="th" className="scroll-smooth" suppressHydrationWarning>
       <body className={`${anuphan.className} antialiased`}>
@@ -49,7 +47,7 @@ export default function RootLayout(props: RootLayoutProps) {
             enableSystem={false}
             defaultTheme="dark"
           >
-            {children}
+            {props.children}
           </ThemeProvider>
         </TooltipProvider>
         <Toaster />
