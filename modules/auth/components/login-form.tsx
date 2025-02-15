@@ -10,6 +10,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { PasswordInput } from "@/components/ui/password-input";
 import { toast } from "@/hooks/use-toast";
 import { type $ERROR_CODES, signIn, useSession } from "@/lib/auth-client";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -113,7 +114,7 @@ export function LoginForm() {
                   </a>
                 </div>
                 <FormControl>
-                  <Input {...field} type="password" placeholder="********" />
+                  <PasswordInput {...field} placeholder="********" />
                 </FormControl>
                 <FormMessage />
               </FormItem>
