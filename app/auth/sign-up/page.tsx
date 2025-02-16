@@ -17,7 +17,7 @@ export default function SignUpPage() {
 
   // need to fix
   if (data) {
-    router.push("/admin/dashboard");
+    router.push("/app/dashboard");
   }
 
   const handleSubmit = async (values: Register) => {
@@ -47,7 +47,7 @@ export default function SignUpPage() {
     toast({
       title: "สมัครสมาชิกสำเร็จ",
     });
-    router.push("/admin/dashboard");
+    router.push("/app/dashboard");
     setIsSubmitting(false);
   };
 

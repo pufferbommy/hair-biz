@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
-import AddEditServiceDialog from "@/modules/admin/services/components/add-edit-service-dialog";
+import AddEditServiceDialog from "@/modules/app/services/components/add-edit-service-dialog";
 import type { ColumnDef } from "@tanstack/react-table";
 import { useState } from "react";
 import type { Service } from "../types";

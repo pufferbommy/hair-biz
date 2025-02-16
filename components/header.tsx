@@ -25,7 +25,7 @@ export default function Header() {
             ) : data ? (
               <li>
                 <Button asChild>
-                  <Link href="/admin/dashboard">ไปยังแอป</Link>
+                  <Link href="/app/dashboard">ไปยังแอป</Link>
                 </Button>
               </li>
             ) : (

@@ -18,11 +18,11 @@ import {
 import { useSession } from "@/lib/auth-client";
 import { usePathname, useRouter } from "next/navigation";
 
-interface AdminLayoutProps {
+interface AppLayoutProps {
   children: React.ReactNode;
 }
 
-export default function AdminLayout(props: AdminLayoutProps) {
+export default function AppLayout(props: AppLayoutProps) {
   const { children } = props;
 
   const session = useSession();
@@ -35,10 +35,10 @@ export default function AdminLayout(props: AdminLayoutProps) {
   const pathname = usePathname();
 
   const nameMap = {
-    "/admin/dashboard": "หน้าหลัก",
-    "/admin/appointments": "การนัดหมาย",
-    "/admin/services": "บริการ",
-    "/admin/barbers": "ช่างตัดผม",
+    "/app/dashboard": "หน้าหลัก",
+    "/app/appointments": "การนัดหมาย",
+    "/app/services": "บริการ",
+    "/app/barbers": "ช่างตัดผม",
   } as const;
 
   return (
@@ -52,9 +52,9 @@ export default function AdminLayout(props: AdminLayoutProps) {
             <Breadcrumb>
               <BreadcrumbList>
                 <BreadcrumbItem className="hidden md:block">
-                  <BreadcrumbLink href="/admin">หน้าหลัก</BreadcrumbLink>
+                  <BreadcrumbLink href="/app">หน้าหลัก</BreadcrumbLink>
                 </BreadcrumbItem>
-                {pathname !== "/admin" && (
+                {pathname !== "/app" && (
                   <>
                     <BreadcrumbSeparator className="hidden md:block" />
                     <BreadcrumbItem>

@@ -129,7 +129,7 @@ export default function OnboardingPage() {
   const handleSubmit = (values: z.infer<typeof stepper.current.schema>) => {
     if (stepper.isLast) {
       // Submit the form data to the server
-      router.push("/admin/dashboard");
+      router.push("/app/dashboard");
     } else {
       stepper.next();
     }

@@ -25,23 +25,23 @@ const data = {
   navMain: [
     {
       title: "แดชบอร์ด",
-      url: "/admin/dashboard",
+      url: "/app/dashboard",
       icon: Settings,
       isActive: true,
     },
     {
       title: "การนัดหมาย",
-      url: "/admin/appointments",
+      url: "/app/appointments",
       icon: Calendar,
     },
     {
       title: "บริการ",
-      url: "/admin/services",
+      url: "/app/services",
       icon: Scissors,
     },
     {
       title: "ช่างตัดผม",
-      url: "/admin/barbers",
+      url: "/app/barbers",
       icon: User,
     },
   ],

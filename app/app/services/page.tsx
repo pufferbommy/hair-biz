@@ -16,9 +16,9 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import AddEditServiceDialog from "@/modules/admin/services/components/add-edit-service-dialog";
-import { columns } from "@/modules/admin/services/components/columns";
-import type { Service } from "@/modules/admin/services/types";
+import AddEditServiceDialog from "@/modules/app/services/components/add-edit-service-dialog";
+import { columns } from "@/modules/app/services/components/columns";
+import type { Service } from "@/modules/app/services/types";
 
 import {
   type VisibilityState,

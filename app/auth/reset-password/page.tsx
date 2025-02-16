@@ -15,7 +15,7 @@ export default function ResetPasswordPage() {
 
   // need to fix
   if (data) {
-    router.push("/admin/dashboard");
+    router.push("/app/dashboard");
   }
 
   const token = new URLSearchParams(window.location.search).get("token");

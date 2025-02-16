@@ -17,7 +17,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import type { Service } from "@/modules/admin/services/types";
+import type { Service } from "@/modules/app/services/types";
 import { Trash } from "lucide-react";
 import { useRef, useState } from "react";
 

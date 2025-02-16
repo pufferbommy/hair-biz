@@ -15,7 +15,7 @@ export default function LoginPage() {
 
   // need to fix
   if (data) {
-    router.push("/admin/dashboard");
+    router.push("/app/dashboard");
   }
 
   const handleSubmit = async (values: Login) => {
@@ -41,7 +41,7 @@ export default function LoginPage() {
       return;
     }
 
-    router.push("/admin/dashboard");
+    router.push("/app/dashboard");
     toast({
       title: "เข้าสู่ระบบสำเร็จ",
       description: "ยินดีต้อนรับกลับมา",

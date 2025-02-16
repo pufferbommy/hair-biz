@@ -16,9 +16,9 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { columns } from "@/modules/admin/barbers/components/columns";
-import type { Barber } from "@/modules/admin/barbers/types";
-import AddEditServiceDialog from "@/modules/admin/services/components/add-edit-service-dialog";
+import { columns } from "@/modules/app/barbers/components/columns";
+import type { Barber } from "@/modules/app/barbers/types";
+import AddEditServiceDialog from "@/modules/app/services/components/add-edit-service-dialog";
 
 import {
   type VisibilityState,

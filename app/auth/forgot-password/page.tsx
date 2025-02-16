@@ -22,7 +22,7 @@ export default function ForgotPasswordPage() {
 
   // need to fix
   if (data) {
-    router.push("/admin/dashboard");
+    router.push("/app/dashboard");
   }
 
   const handleSubmit = async (values: ForgotPassword) => {
