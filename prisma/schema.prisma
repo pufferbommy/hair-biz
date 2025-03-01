@@ -1,0 +1,112 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+model Shop {
+  id            String         @id @default(auto()) @map("_id") @db.ObjectId
+  slug          String         @unique
+  name          String
+  logo          String?
+  description   String?
+  phoneNumber   String?
+  images        String[]
+  lineLink      String?
+  googleMapLink String?
+  userId        String
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  availability  Availability[]
+  services      Service[]
+
+  @@map("shop")
+}
+
+model Availability {
+  id          String  @id @default(auto()) @map("_id") @db.ObjectId
+  day         Int
+  isAvailable Boolean
+  open        String
+  close       String
+  shopId      String  @db.ObjectId
+  shop        Shop    @relation(fields: [shopId], references: [id])
+
+  @@map("availability")
+}
+
+model Service {
+  id       String  @id @default(auto()) @map("_id") @db.ObjectId
+  shopId   String  @db.ObjectId
+  name     String
+  price    Float
+  duration Int?
+  image    String?
+  shop     Shop    @relation(fields: [shopId], references: [id])
+
+  @@map("service")
+}
+
+model User {
+  id            String    @id @map("_id")
+  name          String
+  email         String
+  emailVerified Boolean
+  image         String?
+  createdAt     DateTime
+  updatedAt     DateTime
+  isOnboarded   Boolean?
+  sessions      Session[]
+  accounts      Account[]
+
+  @@unique([email])
+  @@map("user")
+}
+
+model Session {
+  id        String   @id @map("_id")
+  expiresAt DateTime
+  token     String
+  createdAt DateTime
+  updatedAt DateTime
+  ipAddress String?
+  userAgent String?
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([token])
+  @@map("session")
+}
+
+model Account {
+  id                    String    @id @map("_id")
+  accountId             String
+  providerId            String
+  userId                String
+  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  accessToken           String?
+  refreshToken          String?
+  idToken               String?
+  accessTokenExpiresAt  DateTime?
+  refreshTokenExpiresAt DateTime?
+  scope                 String?
+  password              String?
+  createdAt             DateTime
+  updatedAt             DateTime
+
+  @@map("account")
+}
+
+model Verification {
+  id         String    @id @map("_id")
+  identifier String
+  value      String
+  expiresAt  DateTime
+  createdAt  DateTime?
+  updatedAt  DateTime?
+
+  @@map("verification")
+}

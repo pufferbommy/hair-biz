@@ -1,7 +1,6 @@
 "use client";
 
-import { ChevronsUpDown, Plus } from "lucide-react";
-import * as React from "react";
+import { ChevronsUpDown, Plus, Store } from "lucide-react";
 
 import {
   DropdownMenu,
@@ -18,17 +17,25 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
+import { useEffect, useState } from "react";
+
+interface Shop {
+  name: string;
+  logo: React.ElementType;
+}
 
 export function ShopSwitcher({
   shops,
 }: {
-  shops: {
-    name: string;
-    logo: React.ElementType;
-  }[];
+  shops: Shop[];
 }) {
   const { isMobile } = useSidebar();
-  const [activeShop, setActiveShop] = React.useState(shops[0] || null); // Set activeShop to null if no shops
+  console.log(shops);
+  const [activeShop, setActiveShop] = useState<Shop | null>(null);
+
+  useEffect(() => {
+    setActiveShop(shops[0] || null);
+  }, [shops]);
 
   return (
     <SidebarMenu>
@@ -42,15 +49,11 @@ export function ShopSwitcher({
               aria-expanded="false"
             >
               <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
-                {activeShop ? (
-                  <activeShop.logo className="size-4" />
-                ) : (
-                  <div className="size-4 bg-gray-200 rounded-full" />
-                )}
+                <Store size={16} />
               </div>
               <div className="grid flex-1 text-left text-sm leading-tight">
                 <span className="truncate font-semibold">
-                  {activeShop ? activeShop.name : "ไม่มีร้าน"}
+                  {activeShop?.name}
                 </span>
               </div>
               <ChevronsUpDown className="ml-auto" />
@@ -62,32 +65,24 @@ export function ShopSwitcher({
             side={isMobile ? "bottom" : "right"}
             sideOffset={4}
           >
-            {shops.length > 0 ? (
-              <>
-                <DropdownMenuLabel className="text-xs text-muted-foreground">
-                  ร้าน
-                </DropdownMenuLabel>
-                {shops.map((shop, index) => (
-                  <DropdownMenuItem
-                    key={shop.name}
-                    onClick={() => setActiveShop(shop)}
-                    className="gap-2 p-2 hover:bg-gray-100 transition-colors duration-200"
-                    role="menuitem"
-                  >
-                    <div className="flex size-6 items-center justify-center rounded-sm border">
-                      <shop.logo className="size-4 shrink-0" />
-                    </div>
-                    {shop.name}
-                    <DropdownMenuShortcut>⌘{index + 1}</DropdownMenuShortcut>
-                  </DropdownMenuItem>
-                ))}
-                <DropdownMenuSeparator />
-              </>
-            ) : (
-              <DropdownMenuItem className="p-2 text-muted-foreground">
-                ไม่มีร้านให้เลือก
+            <DropdownMenuLabel className="text-xs text-muted-foreground">
+              ร้าน
+            </DropdownMenuLabel>
+            {shops.map((shop, index) => (
+              <DropdownMenuItem
+                key={shop.name}
+                onClick={() => setActiveShop(shop)}
+                className="gap-2 p-2 hover:bg-gray-100 transition-colors duration-200"
+                role="menuitem"
+              >
+                <div className="flex size-6 items-center justify-center rounded-sm border">
+                  <Store size={16} />
+                </div>
+                {shop.name}
+                <DropdownMenuShortcut>⌘{index + 1}</DropdownMenuShortcut>
               </DropdownMenuItem>
-            )}
+            ))}
+            <DropdownMenuSeparator />
             <DropdownMenuItem className="gap-2 p-2 hover:bg-gray-100 transition-colors duration-200">
               <div className="flex size-6 items-center justify-center rounded-md border bg-background">
                 <Plus className="size-4" />

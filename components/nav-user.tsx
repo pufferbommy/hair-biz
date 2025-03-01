@@ -1,6 +1,13 @@
 "use client";
 
-import { BadgeCheck, Bell, ChevronsUpDown, LogOut } from "lucide-react";
+import {
+  BadgeCheck,
+  Bell,
+  ChevronsUpDown,
+  LogOut,
+  Moon,
+  Sun,
+} from "lucide-react";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
@@ -18,8 +25,9 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
-import { type Session, signOut } from "@/lib/auth-client";
-import { useRouter } from "next/navigation";
+import { type Session, authClient } from "@/lib/auth-client";
+import { useTheme } from "next-themes";
+import { ModeToggle } from "./mode-toggle";
 
 interface NavUserProps {
   user?: Session["user"];
@@ -29,9 +37,7 @@ export function NavUser(props: NavUserProps) {
   const { user } = props;
 
   const { isMobile } = useSidebar();
-  const router = useRouter();
-
-  console.log(user);
+  const { theme, setTheme } = useTheme();
 
   return (
     <SidebarMenu>
@@ -48,7 +54,10 @@ export function NavUser(props: NavUserProps) {
                   {user?.email[0]}
                 </AvatarFallback>
               </Avatar>
-              <span className="truncate text-xs">{user?.email}</span>
+              <div className="grid flex-1 text-left text-sm leading-tight">
+                <span className="truncate font-semibold">{user?.name}</span>
+                <span className="truncate text-xs">{user?.email}</span>
+              </div>
               <ChevronsUpDown className="ml-auto size-4" />
             </SidebarMenuButton>
           </DropdownMenuTrigger>
@@ -69,7 +78,10 @@ export function NavUser(props: NavUserProps) {
                     {user?.email[0]}
                   </AvatarFallback>
                 </Avatar>
-                <span className="truncate text-xs">{user?.email}</span>
+                <div className="grid flex-1 text-left text-sm leading-tight">
+                  <span className="truncate font-semibold">{user?.name}</span>
+                  <span className="truncate text-xs">{user?.email}</span>
+                </div>
               </div>
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
@@ -82,14 +94,16 @@ export function NavUser(props: NavUserProps) {
                 <Bell />
                 การแจ้งเตือน
               </DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+              >
+                <Sun className="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
+                <Moon className="absolute h-[1.2rem] w-[1.2rem] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
+                {theme === "dark" ? "เปลี่ยนเป็นโหมดสว่าง" : "เปลี่ยนเป็นโหมดมืด"}
+              </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
-            <DropdownMenuItem
-              onClick={() => {
-                signOut();
-                router.push("/");
-              }}
-            >
+            <DropdownMenuItem onClick={() => authClient.signOut()}>
               <LogOut />
               ออกจากระบบ
             </DropdownMenuItem>

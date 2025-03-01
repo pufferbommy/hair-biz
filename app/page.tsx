@@ -19,6 +19,7 @@ import {
   Users,
   Zap,
 } from "lucide-react";
+import { nanoid } from "nanoid";
 import Link from "next/link";
 
 export const metadata = {
@@ -31,35 +32,41 @@ export const metadata = {
 
 const features = [
   {
+    id: nanoid(),
     title: "การจัดตารางอัจฉริยะ",
     description: "จัดการนัดหมายได้อย่างง่ายดายด้วยระบบปฏิทินที่ใช้งานง่ายและมีประสิทธิภาพ",
     icon: Calendar,
   },
   {
+    id: nanoid(),
     title: "ข้อมูลลูกค้าเชิงลึก",
     description:
       "เก็บบันทึกข้อมูลที่ละเอียดเกี่ยวกับความชอบและประวัติของลูกค้าเพื่อบริการที่เป็นส่วนตัวและตอบโจทย์",
     icon: Users,
   },
   {
+    id: nanoid(),
     title: "การสนับสนุนหลายสถานที่",
     description:
       "จัดการร้านตัดผมหลายแห่งได้อย่างราบรื่นจากแดชบอร์ดเดียว ทำให้คุณควบคุมได้ง่าย",
     icon: Scissors,
   },
   {
+    id: nanoid(),
     title: "การวิเคราะห์ธุรกิจ",
     description:
       "รับข้อมูลเชิงลึกที่มีค่าเกี่ยวกับประสิทธิภาพธุรกิจของคุณด้วยรายงานที่ละเอียดและเข้าใจง่าย",
     icon: TrendingUp,
   },
   {
+    id: nanoid(),
     title: "การตั้งค่าที่ปรับแต่งได้",
     description:
       "ปรับแต่งระบบให้เหมาะกับความต้องการและกระบวนการทำงานเฉพาะของธุรกิจของคุณ",
     icon: Settings,
   },
   {
+    id: nanoid(),
     title: "ราคาที่เหมาะสม",
     description: "เริ่มต้นฟรีและอัปเกรดเมื่อธุรกิจของคุณเติบโต โดยไม่มีค่าใช้จ่ายแอบแฝง",
     icon: DollarSign,
@@ -68,22 +75,26 @@ const features = [
 
 const howItWorks = [
   {
+    id: nanoid(),
     title: "ลงทะเบียน",
     description: "สร้างบัญชีฟรีของคุณและตั้งค่าโปรไฟล์ร้านตัดผมของคุณในไม่กี่นาที",
     icon: ClipboardList,
   },
   {
+    id: nanoid(),
     title: "ปรับแต่ง",
     description:
       "ปรับแต่งระบบให้ตรงกับความต้องการของคุณ เพิ่มบริการและตั้งเวลาทำการได้ตามต้องการ",
     icon: Settings,
   },
   {
+    id: nanoid(),
     title: "จัดการการจอง",
     description: "เริ่มรับและจัดการนัดหมายได้อย่างง่ายดายด้วยระบบที่ใช้งานง่าย",
     icon: Zap,
   },
   {
+    id: nanoid(),
     title: "เติบโตธุรกิจของคุณ",
     description:
       "ใช้ข้อมูลเชิงลึกและการวิเคราะห์เพื่อทำการตัดสินใจที่ขับเคลื่อนด้วยข้อมูลและขยายธุรกิจของคุณ",
@@ -104,7 +115,7 @@ export default function HomePage() {
             เริ่มต้นการจัดการร้านตัดผมของคุณอย่างมีประสิทธิภาพ
           </p>
           <Button asChild size="lg">
-            <Link href="/auth/sign-up">เริ่มต้นใช้งาน</Link>
+            <Link href="/auth/register">เริ่มต้นใช้งาน</Link>
           </Button>
         </section>
         <section id="features" className="py-20 bg-primary/5">
@@ -115,7 +126,7 @@ export default function HomePage() {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {features.map((feature, index) => (
                 <Card
-                  key={index}
+                  key={feature.id}
                   className="transition-all duration-300 hover:shadow-lg"
                 >
                   <CardHeader>
@@ -138,7 +149,7 @@ export default function HomePage() {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
               {howItWorks.map((step, index) => (
                 <Card
-                  key={index}
+                  key={step.id}
                   className="transition-all duration-300 hover:shadow-lg"
                 >
                   <CardHeader>
@@ -164,7 +175,7 @@ export default function HomePage() {
               สมัครใช้งานฟรี แล้วลองสัมผัสประสบการณ์จัดการร้านตัดผมที่ง่ายขึ้น
             </p>
             <Button asChild size="lg">
-              <Link href="/auth/sign-up">สมัครใช้งานเลย</Link>
+              <Link href="/auth/register">สมัครใช้งานเลย</Link>
             </Button>
           </div>
         </section>

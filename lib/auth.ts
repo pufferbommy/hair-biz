@@ -1,13 +1,17 @@
 import { sendEmail } from "@/actions/email";
+import { prisma } from "@/db";
 import { betterAuth } from "better-auth";
-import { mongodbAdapter } from "better-auth/adapters/mongodb";
-import { MongoClient } from "mongodb";
-import { env } from "./env";
-
-const client = new MongoClient(env.MONGO_URI);
+import { prismaAdapter } from "better-auth/adapters/prisma";
 
 export const auth = betterAuth({
-  database: mongodbAdapter(client.db()),
+  database: prismaAdapter(prisma, {
+    provider: "mongodb",
+  }),
+  user: {
+    additionalFields: {
+      isOnboarded: { type: "boolean" },
+    },
+  },
   emailAndPassword: {
     enabled: true,
     sendResetPassword: async ({ user, url, token }, request) => {

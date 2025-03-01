@@ -1,6 +1,6 @@
 "use client";
 
-import { resetPassword, useSession } from "@/lib/auth-client";
+import { authClient } from "@/lib/auth-client";
 import {
   type ResetPassword,
   ResetPasswordForm,
@@ -11,12 +11,6 @@ import { useState } from "react";
 export default function ResetPasswordPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const router = useRouter();
-  const { data } = useSession();
-
-  // need to fix
-  if (data) {
-    router.push("/app/dashboard");
-  }
 
   const token = new URLSearchParams(window.location.search).get("token");
   if (!token) {
@@ -26,7 +20,7 @@ export default function ResetPasswordPage() {
   const handleSubmit = async (values: ResetPassword) => {
     setIsSubmitting(true);
 
-    const { data, error } = await resetPassword({
+    const { data, error } = await authClient.resetPassword({
       newPassword: values.password,
       token,
     });

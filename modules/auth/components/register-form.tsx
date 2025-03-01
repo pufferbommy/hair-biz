@@ -11,17 +11,14 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { PasswordInput } from "@/components/ui/password-input";
-import { toast } from "@/hooks/use-toast";
-import { signUp, useSession } from "@/lib/auth-client";
 import { cn } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useRouter } from "next/navigation";
-import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
 const Register = z.object({
   email: z.string().min(1, "กรุณากรอกอีเมล").email("กรุณากรอกอีเมลที่ถูกต้อง"),
+  name: z.string(),
   password: z
     .string()
     .min(8, "รหัสผ่านต้องมีความยาวอย่างน้อย 8 ตัวอักษร")
@@ -31,15 +28,15 @@ const Register = z.object({
 
 export type Register = z.infer<typeof Register>;
 
-interface SignUpFormProps {
+interface RegisterFormProps {
   onSubmit: (values: Register) => void;
   isSubmitting: boolean;
 }
 
-export function SignUpForm(props: SignUpFormProps) {
+export function RegisterForm(props: RegisterFormProps) {
   const form = useForm<Register>({
     resolver: zodResolver(Register),
-    defaultValues: { email: "", password: "" },
+    defaultValues: { email: "", name: "", password: "" },
   });
 
   return (
@@ -50,9 +47,22 @@ export function SignUpForm(props: SignUpFormProps) {
           name="email"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>อีเมล</FormLabel>
+              <FormLabel required>อีเมล</FormLabel>
               <FormControl>
                 <Input {...field} placeholder="johndoe@gmail.com" />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="name"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>ชื่อ</FormLabel>
+              <FormControl>
+                <Input {...field} placeholder="johndoe" />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -63,7 +73,7 @@ export function SignUpForm(props: SignUpFormProps) {
           name="password"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>รหัสผ่าน</FormLabel>
+              <FormLabel required>รหัสผ่าน</FormLabel>
               <FormControl>
                 <PasswordInput {...field} placeholder="********" />
               </FormControl>
@@ -104,7 +114,7 @@ export function SignUpForm(props: SignUpFormProps) {
           className="w-full"
           loading={props.isSubmitting}
         >
-          สมัครสมาชิก
+          {props.isSubmitting ? "กำลังสมัครสมาชิก..." : "สมัครสมาชิก"}
         </Button>
       </form>
     </Form>

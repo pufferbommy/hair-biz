@@ -1,14 +1,14 @@
 "use client";
 
-import { useSession } from "@/lib/auth-client";
 import Link from "next/link";
 import React from "react";
 import { ModeToggle } from "./mode-toggle";
+import { useSession } from "./session-provider";
 import { Button } from "./ui/button";
 import { Skeleton } from "./ui/skeleton";
 
 export default function Header() {
-  const { data, isPending } = useSession();
+  const session = useSession();
 
   return (
     <header className="py-4 sticky z-10 top-0 bg-background border-b border-b-primary/10">
@@ -18,11 +18,11 @@ export default function Header() {
         </Link>
         <nav>
           <ul className="flex gap-2">
-            {isPending ? (
+            {session.isPending ? (
               <li>
                 <Skeleton className="h-9 w-[105.17px] rounded-lg" />
               </li>
-            ) : data ? (
+            ) : session.data ? (
               <li>
                 <Button asChild>
                   <Link href="/app/dashboard">ไปยังแอป</Link>
@@ -37,7 +37,7 @@ export default function Header() {
                 </li>
                 <li>
                   <Button asChild>
-                    <Link href="/auth/sign-up">สมัครสมาชิก</Link>
+                    <Link href="/auth/register">สมัครสมาชิก</Link>
                   </Button>
                 </li>
               </>

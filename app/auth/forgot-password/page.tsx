@@ -1,34 +1,20 @@
 "use client";
 
-import { toast } from "@/hooks/use-toast";
-import {
-  type $ERROR_CODES,
-  forgetPassword,
-  signIn,
-  useSession,
-} from "@/lib/auth-client";
+import { authClient } from "@/lib/auth-client";
 import {
   type ForgotPassword,
   ForgotPasswordForm,
 } from "@/modules/auth/components/forgot-password-form";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 export default function ForgotPasswordPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const router = useRouter();
-  const { data } = useSession();
-
-  // need to fix
-  if (data) {
-    router.push("/app/dashboard");
-  }
 
   const handleSubmit = async (values: ForgotPassword) => {
     setIsSubmitting(true);
 
-    const { error } = await forgetPassword({
+    const { error } = await authClient.forgetPassword({
       email: values.email,
       redirectTo: "/auth/reset-password",
     });

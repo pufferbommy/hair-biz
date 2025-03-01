@@ -29,8 +29,6 @@ interface LoginFormProps {
 }
 
 export function LoginForm(props: LoginFormProps) {
-  const { onSubmit, isSubmitting } = props;
-
   const form = useForm<Login>({
     resolver: zodResolver(Login),
     defaultValues: {
@@ -42,7 +40,7 @@ export function LoginForm(props: LoginFormProps) {
 
   return (
     <Form {...form}>
-      <form className="space-y-4" onSubmit={form.handleSubmit(onSubmit)}>
+      <form className="space-y-4" onSubmit={form.handleSubmit(props.onSubmit)}>
         <FormField
           control={form.control}
           name="email"
@@ -93,12 +91,12 @@ export function LoginForm(props: LoginFormProps) {
           </Link>
         </div>
         <Button
-          loading={isSubmitting}
+          loading={props.isSubmitting}
           type="submit"
           size="lg"
           className="w-full"
         >
-          เข้าสู่ระบบ
+          {props.isSubmitting ? "กำลังเข้าสู่ระบบ..." : "เข้าสู่ระบบ"}
         </Button>
       </form>
     </Form>

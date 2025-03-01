@@ -1,10 +1,6 @@
 "use client";
 
-import { Calendar, Scissors, Settings, Store, User } from "lucide-react";
-import type * as React from "react";
-
 import { NavUser } from "@/components/nav-user";
-import { ShopSwitcher } from "@/components/shop-switcher";
 import {
   Sidebar,
   SidebarContent,
@@ -16,51 +12,67 @@ import {
   SidebarMenuItem,
   SidebarRail,
 } from "@/components/ui/sidebar";
-import { useSession } from "@/lib/auth-client";
+import { useQuery } from "@tanstack/react-query";
+import { Calendar, Scissors, Settings, User } from "lucide-react";
+import { nanoid } from "nanoid";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useSession } from "./session-provider";
+import { ShopSwitcher } from "./shop-switcher";
 
-const data = {
-  shops: [],
-  navMain: [
-    {
-      title: "แดชบอร์ด",
-      url: "/app/dashboard",
-      icon: Settings,
-      isActive: true,
-    },
-    {
-      title: "การนัดหมาย",
-      url: "/app/appointments",
-      icon: Calendar,
-    },
-    {
-      title: "บริการ",
-      url: "/app/services",
-      icon: Scissors,
-    },
-    {
-      title: "ช่างตัดผม",
-      url: "/app/barbers",
-      icon: User,
-    },
-  ],
-};
+const navMain = [
+  {
+    id: nanoid(),
+    title: "แดชบอร์ด",
+    url: "/app/dashboard",
+    icon: Settings,
+    isActive: true,
+  },
+  {
+    id: nanoid(),
+    title: "การจอง",
+    url: "/app/bookings",
+    icon: Calendar,
+  },
+  {
+    id: nanoid(),
+    title: "บริการ",
+    url: "/app/services",
+    icon: Scissors,
+  },
+  {
+    id: nanoid(),
+    title: "ช่างตัดผม",
+    url: "/app/barbers",
+    icon: User,
+  },
+];
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const pathname = usePathname();
   const session = useSession();
 
+  const query = useQuery({
+    queryKey: ["shops"],
+    queryFn: async () => {
+      const response = await fetch("/api/shops");
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+      return response.json();
+    },
+  });
+
   return (
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
-        <ShopSwitcher shops={data.shops} />
+        <ShopSwitcher shops={query.data?.shops || []} />
       </SidebarHeader>
       <SidebarContent>
         <SidebarGroup>
           <SidebarMenu>
-            {data.navMain.map((item) => (
-              <SidebarMenuItem key={item.title}>
+            {navMain.map((item) => (
+              <SidebarMenuItem key={item.id}>
                 <SidebarMenuButton
                   isActive={pathname === item.url}
                   tooltip={item.title}
@@ -68,7 +80,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                 >
                   <Link href={item.url}>
                     <item.icon />
-                    {item.title}
+                    <span>{item.title}</span>
                   </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>

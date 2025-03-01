@@ -1,51 +1,40 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { toast } from "@/hooks/use-toast";
-import { type $ERROR_CODES, signIn, useSession } from "@/lib/auth-client";
+import { authClient } from "@/lib/auth-client";
 import { type Login, LoginForm } from "@/modules/auth/components/login-form";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { toast } from "sonner";
 
 export default function LoginPage() {
-  const [isSubmitting, setIsSubmitting] = useState(false);
   const router = useRouter();
-  const { data } = useSession();
-
-  // need to fix
-  if (data) {
-    router.push("/app/dashboard");
-  }
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleSubmit = async (values: Login) => {
     setIsSubmitting(true);
 
-    const { error } = await signIn.email({
+    const { error } = await authClient.signIn.email({
       email: values.email,
       password: values.password,
       rememberMe: values.rememberMe,
     });
 
     if (error?.code) {
-      type ErrorTypes = Partial<Record<keyof typeof $ERROR_CODES, string>>;
+      type ErrorTypes = Partial<
+        Record<keyof typeof authClient.$ERROR_CODES, string>
+      >;
       const errorCodes = {
         INVALID_EMAIL_OR_PASSWORD: "อีเมลหรือรหัสผ่านไม่ถูกต้อง",
       } satisfies ErrorTypes;
-      toast({
-        title: "เกิดข้อผิดพลาด",
-        description: errorCodes[error.code as keyof typeof errorCodes],
-        variant: "destructive",
-      });
+      toast(errorCodes[error.code as keyof typeof errorCodes]);
       setIsSubmitting(false);
       return;
     }
 
     router.push("/app/dashboard");
-    toast({
-      title: "เข้าสู่ระบบสำเร็จ",
-      description: "ยินดีต้อนรับกลับมา",
-    });
+    toast("เข้าสู่ระบบสำเร็จ");
     setIsSubmitting(false);
   };
 
@@ -58,7 +47,7 @@ export default function LoginPage() {
       </Button>
       <div className="text-center text-sm">
         ไม่มีบัญชี?{" "}
-        <Link href="/auth/sign-up" className="underline underline-offset-4">
+        <Link href="/auth/register" className="underline underline-offset-4">
           สมัครสมาชิก
         </Link>
       </div>

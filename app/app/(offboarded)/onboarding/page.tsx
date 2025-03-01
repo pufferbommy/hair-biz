@@ -1,5 +1,6 @@
 "use client";
 
+import { createShop } from "@/actions/shop";
 import { Button } from "@/components/ui/button";
 import { Combobox } from "@/components/ui/combobox";
 import {
@@ -13,14 +14,14 @@ import {
 import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
-import { useToast } from "@/hooks/use-toast";
+import { authClient } from "@/lib/auth-client";
 import { cn } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { defineStepper } from "@stepperize/react";
-import { Calendar, Check, Store } from "lucide-react";
-import { useRouter } from "next/navigation";
+import { Calendar, Store } from "lucide-react";
 import React, { useMemo } from "react";
 import { useFieldArray, useForm, useFormContext } from "react-hook-form";
+import { toast } from "sonner";
 import { z } from "zod";
 
 // Constants
@@ -53,16 +54,17 @@ const generateTimeOptions = () => {
 };
 
 // Zod Schemas
-const shopSettingsSchema = z.object({
-  shopName: z.string().min(1, "กรุณากรอกชื่อร้าน"),
-  shopDescription: z.string(),
-  shopImages: z.array(z.string()),
+export const shopSettingsSchema = z.object({
+  logo: z.string(),
+  name: z.string().min(1, "กรุณากรอกชื่อร้าน"),
+  description: z.string(),
+  images: z.array(z.string()),
   phoneNumber: z.string(),
   lineLink: z.string().url().or(z.literal("")),
   googleMapLink: z.string().url().or(z.literal("")),
 });
 
-const availabilitySettingsSchema = z.object({
+export const availabilitySettingsSchema = z.object({
   availability: z.array(
     z.object({
       isAvailable: z.boolean(),
@@ -74,10 +76,14 @@ const availabilitySettingsSchema = z.object({
 });
 
 // Types
-type ShopSettingsFormValues = z.infer<typeof shopSettingsSchema>;
-type AvailabilitySettingsFormValues = z.infer<
+export type ShopSettingsFormValues = z.infer<typeof shopSettingsSchema>;
+export type AvailabilitySettingsFormValues = z.infer<
   typeof availabilitySettingsSchema
 >;
+
+export interface ShopFormValues
+  extends ShopSettingsFormValues,
+    AvailabilitySettingsFormValues {}
 
 // Stepper Definition
 const { useStepper, steps, utils } = defineStepper(
@@ -104,14 +110,13 @@ const { useStepper, steps, utils } = defineStepper(
 // Main Component
 export default function OnboardingPage() {
   const stepper = useStepper();
-  const { toast } = useToast();
-  const router = useRouter();
   const form = useForm<z.infer<typeof stepper.current.schema>>({
     resolver: zodResolver(stepper.current.schema),
     defaultValues: {
-      shopName: "",
-      shopDescription: "",
-      shopImages: [],
+      logo: "",
+      name: "",
+      description: "",
+      images: [],
       phoneNumber: "",
       lineLink: "",
       googleMapLink: "",
@@ -126,10 +131,14 @@ export default function OnboardingPage() {
 
   const currentIndex = utils.getIndex(stepper.current.id);
 
-  const handleSubmit = (values: z.infer<typeof stepper.current.schema>) => {
+  const handleSubmit = async (
+    values: z.infer<typeof stepper.current.schema>,
+  ) => {
     if (stepper.isLast) {
-      // Submit the form data to the server
-      router.push("/app/dashboard");
+      const shop = await createShop(form.getValues() as ShopFormValues);
+      await authClient.updateUser({
+        isOnboarded: true,
+      });
     } else {
       stepper.next();
     }
@@ -164,9 +173,7 @@ export default function OnboardingPage() {
                       onClick={async () => {
                         const isValid = await form.trigger();
                         if (!isValid) {
-                          toast({
-                            title: "กรุณากรอกข้อมูลให้ครบถ้วน",
-                          });
+                          toast("กรุณากรอกข้อมูลให้ครบถ้วน");
                           return;
                         }
                         if (index - currentIndex > 1) return;
@@ -229,7 +236,7 @@ function ShopSettingsStep() {
       <div className="grid grid-cols-2 gap-4">
         <FormField
           control={form.control}
-          name="shopName"
+          name="name"
           render={({ field }) => (
             <FormItem>
               <FormLabel required>ชื่อร้าน</FormLabel>
@@ -237,6 +244,7 @@ function ShopSettingsStep() {
                 <Input placeholder="A good hair cut barber shop" {...field} />
               </FormControl>
               <FormMessage />
+              {}
             </FormItem>
           )}
         />
@@ -290,7 +298,7 @@ function ShopSettingsStep() {
       </div>
       <FormField
         control={form.control}
-        name="shopDescription"
+        name="description"
         render={({ field }) => (
           <FormItem>
             <FormLabel>รายละเอียดร้าน</FormLabel>
@@ -305,7 +313,7 @@ function ShopSettingsStep() {
       />
       <FormField
         control={form.control}
-        name="shopImages"
+        name="images"
         render={({ field }) => (
           <FormItem>
             <FormLabel>รูปภาพร้าน</FormLabel>
